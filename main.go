@@ -38,8 +38,8 @@ func main() {
 
 func showHelp() {
 	fmt.Println("Usage:")
-	fmt.Println("  calculator [expression]        Evaluate the provided expression")
-	fmt.Println("  calculator -file [file]        Read and print the content of the specified file")
-	fmt.Println("  calculator                     Run in interactive prompt mode")
-	fmt.Println("  calculator -help               Show this help message")
+	fmt.Println("  ./calc [expression]        Evaluate the provided expression")
+	fmt.Println("  ./calc -file [file]        Read and print the content of the specified file")
+	fmt.Println("  ./calc                     Run in interactive prompt mode")
+	fmt.Println("  ./calc -help               Show this help message")
 }

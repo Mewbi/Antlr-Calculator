@@ -2,7 +2,6 @@ package calculator
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 
 	"calculator/parsing"
@@ -32,42 +31,79 @@ func NewCalculatorVisitor() *CalculatorVisitor {
 // Visit Assign Context
 func (v *CalculatorVisitor) VisitAssign(ctx *parsing.AssignContext) interface{} {
 	id := ctx.ID().GetText()
-	value := v.Visit(ctx.Expr()).(Result).Value
-	v.memory[id] = value
-	fmt.Println(id, value)
-	return Result{value, nil}
+	result := v.Visit(ctx.Expr()).(Result)
+	if result.Error != nil {
+		return result
+	}
+
+	v.memory[id] = result.Value
+	return Result{result.Value, nil}
 }
 
 // Visit Print Expression Context
 func (v *CalculatorVisitor) VisitPrintExpr(ctx *parsing.PrintExprContext) interface{} {
-	value := v.Visit(ctx.Expr()).(Result).Value
-	fmt.Println(value)
-	return Result{value, nil}
+	result := v.Visit(ctx.Expr()).(Result)
+	if result.Error != nil {
+		return result
+	}
+	fmt.Println(result.Value)
+	return Result{result.Value, nil}
 }
 
 // Visit Multiplication and Division Context
 func (v *CalculatorVisitor) VisitMulDiv(ctx *parsing.MulDivContext) interface{} {
-	left := v.Visit(ctx.Expr(0)).(Result).Value
-	right := v.Visit(ctx.Expr(1)).(Result).Value
-	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerMUL {
-		return Result{left * right, nil}
+	resultLeft := v.Visit(ctx.Expr(0)).(Result)
+	resultRight := v.Visit(ctx.Expr(1)).(Result)
+
+	if resultLeft.Error != nil {
+		return Result{0, fmt.Errorf("error getting left value: %s", resultLeft.Error.Error())}
 	}
-	return Result{left / right, nil}
+
+	if resultRight.Error != nil {
+		return Result{0, fmt.Errorf("error getting right value: %s", resultRight.Error.Error())}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerMUL {
+		return Result{resultLeft.Value * resultRight.Value, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerDIV {
+		return Result{resultLeft.Value / resultRight.Value, nil}
+	}
+
+	return Result{0, fmt.Errorf("invalid operator: %s", ctx.GetOp().GetText())}
 }
 
 // Visit Addition and Subtraction Context
 func (v *CalculatorVisitor) VisitAddSub(ctx *parsing.AddSubContext) interface{} {
-	left := v.Visit(ctx.Expr(0)).(Result).Value
-	right := v.Visit(ctx.Expr(1)).(Result).Value
-	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerADD {
-		return Result{left + right, nil}
+	resultLeft := v.Visit(ctx.Expr(0)).(Result)
+	resultRight := v.Visit(ctx.Expr(1)).(Result)
+
+	if resultLeft.Error != nil {
+		return Result{0, fmt.Errorf("error getting left value: %s", resultLeft.Error.Error())}
 	}
-	return Result{left - right, nil}
+
+	if resultRight.Error != nil {
+		return Result{0, fmt.Errorf("error getting right value: %s", resultRight.Error.Error())}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerADD {
+		return Result{resultLeft.Value + resultRight.Value, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerSUB {
+		return Result{resultLeft.Value - resultRight.Value, nil}
+	}
+
+	return Result{0, fmt.Errorf("invalid operator: %s", ctx.GetOp().GetText())}
 }
 
 // Visit Integer Context
 func (v *CalculatorVisitor) VisitNumber(ctx *parsing.NumberContext) interface{} {
-	value, _ := strconv.ParseFloat(ctx.NUMBER().GetText(), 64)
+	value, err := strconv.ParseFloat(ctx.NUMBER().GetText(), 64)
+	if err != nil {
+		return Result{0, fmt.Errorf("error converting number to float: %s", err.Error())}
+	}
 	return Result{value, nil}
 }
 
@@ -77,7 +113,7 @@ func (v *CalculatorVisitor) VisitId(ctx *parsing.IdContext) interface{} {
 	if value, exists := v.memory[id]; exists {
 		return Result{value, nil}
 	}
-	return Result{0, nil}
+	return Result{0, fmt.Errorf("cannot access variable %s", id)}
 }
 
 // Visit Parenthesis Context
@@ -86,11 +122,9 @@ func (v *CalculatorVisitor) VisitParens(ctx *parsing.ParensContext) interface{} 
 }
 
 func (v *CalculatorVisitor) Visit(tree antlr.ParseTree) interface{} {
-	// fmt.Printf("visit input type: %v\n", reflect.TypeOf(tree))
-
 	switch t := tree.(type) {
 	case *antlr.ErrorNodeImpl:
-		return fmt.Errorf("syntax error near '%s'", t.GetText())
+		return Result{0, fmt.Errorf("syntax error near '%s'", t.GetText())}
 	default:
 		if cr, ok := tree.Accept(v).(Result); ok {
 			return cr
@@ -102,24 +136,16 @@ func (v *CalculatorVisitor) Visit(tree antlr.ParseTree) interface{} {
 
 func (v *CalculatorVisitor) VisitChildren(node antlr.RuleNode) interface{} {
 	for _, n := range node.GetChildren() {
-		if false {
-			fmt.Printf("> %s", n.(antlr.ParseTree).GetText())
-		}
 		cr := v.Visit(n.(antlr.ParseTree)).(Result)
 		if cr.Error != nil {
-			// if errors.Is(cr.Error, ErrorBlank) {
-			// 	continue
-			// }
-			fmt.Fprintf(os.Stderr, "ERROR: %s\n", cr.Error)
+			fmt.Printf("ERROR: %s\n", cr.Error)
 			continue
 		}
-		fmt.Printf("  %f\n", cr.Value)
 	}
 	return Result{0, nil}
 }
 
 func (v *CalculatorVisitor) VisitProg(ctx *parsing.ProgContext) interface{} {
-	fmt.Printf("Calculating Programm: %s", ctx.GetText())
 	return v.VisitChildren(ctx)
 }
 
