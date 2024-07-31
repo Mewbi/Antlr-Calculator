@@ -68,6 +68,12 @@ func (s *BaseCalculatorListener) EnterAddSub(ctx *AddSubContext) {}
 // ExitAddSub is called when production AddSub is exited.
 func (s *BaseCalculatorListener) ExitAddSub(ctx *AddSubContext) {}
 
+// EnterOpRel is called when production OpRel is entered.
+func (s *BaseCalculatorListener) EnterOpRel(ctx *OpRelContext) {}
+
+// ExitOpRel is called when production OpRel is exited.
+func (s *BaseCalculatorListener) ExitOpRel(ctx *OpRelContext) {}
+
 // EnterId is called when production id is entered.
 func (s *BaseCalculatorListener) EnterId(ctx *IdContext) {}
 

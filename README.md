@@ -24,11 +24,12 @@ stat:   expr NEWLINE                # printExpr
     |   NEWLINE                     # blank
     ;
 
-expr:   expr op=('*'|'/') expr      # MulDiv
-    |   expr op=('+'|'-') expr      # AddSub
-    |   NUMBER                      # number
-    |   ID                          # id
-    |   '(' expr ')'                # parens
+expr:   expr op=('*'|'/') expr                          # MulDiv
+    |   expr op=('+'|'-') expr                          # AddSub
+    |   expr op=('=='|'!='|'<'|'>'|'<='|'>=') expr      # OpRel
+    |   NUMBER                                          # number
+    |   ID                                              # id
+    |   '(' expr ')'                                    # parens
     ;
 
 // Lexer rules
@@ -37,12 +38,37 @@ DIV:    '/' ;
 ADD:    '+' ;
 SUB:    '-' ;
 
+EQUAL:        '==' ;
+DIFF:         '!=' ;
+LESS:         '<' ;
+GREATER:      '>' ;
+LESSEQ:       '<=' ;
+GREATEREQ:    '>=' ;
+
 ID:         [a-zA-Z_][a-zA-Z_0-9]* ;
 NUMBER:     [0-9]+ ('.'[0-9]+)? ;
 
 NEWLINE:    '\r'? '\n' ;
 WS:         [ \t]+ -> skip ;
 ```
+
+Obs. Relational operators will return 1 if expression is true, and 0 if false.
+
+## 💾 Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/Mewbi/Antlr-Calculator.git
+   ```
+2. Build the program:
+   ```sh
+   go build -o ./calc main.go
+   ```
+
+3. Run the program:
+   ```sh
+   ./calc
+   ```
 
 ## 📋 Usage
 
@@ -93,21 +119,5 @@ $ ./calc
 25
 > exit
 ```
-
-## 💾 Installation
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/Mewbi/Antlr-Calculator.git
-   ```
-2. Build the program:
-   ```sh
-   go build -o ./calc main.go
-   ```
-
-3. Run the program:
-   ```sh
-   ./calc
-   ```
 
 Enjoy using the simple calculator! 🎉

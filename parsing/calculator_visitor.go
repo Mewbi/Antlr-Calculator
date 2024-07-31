@@ -31,6 +31,9 @@ type CalculatorVisitor interface {
 	// Visit a parse tree produced by CalculatorParser#AddSub.
 	VisitAddSub(ctx *AddSubContext) interface{}
 
+	// Visit a parse tree produced by CalculatorParser#OpRel.
+	VisitOpRel(ctx *OpRelContext) interface{}
+
 	// Visit a parse tree produced by CalculatorParser#id.
 	VisitId(ctx *IdContext) interface{}
 }

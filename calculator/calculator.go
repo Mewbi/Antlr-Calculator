@@ -1,10 +1,9 @@
 package calculator
 
 import (
+	"calculator/parsing"
 	"fmt"
 	"strconv"
-
-	"calculator/parsing"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -93,6 +92,64 @@ func (v *CalculatorVisitor) VisitAddSub(ctx *parsing.AddSubContext) interface{} 
 
 	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerSUB {
 		return Result{resultLeft.Value - resultRight.Value, nil}
+	}
+
+	return Result{0, fmt.Errorf("invalid operator: %s", ctx.GetOp().GetText())}
+}
+
+// Visit Operators Relational Context
+func (v *CalculatorVisitor) VisitOpRel(ctx *parsing.OpRelContext) interface{} {
+	resultLeft := v.Visit(ctx.Expr(0)).(Result)
+	resultRight := v.Visit(ctx.Expr(1)).(Result)
+
+	if resultLeft.Error != nil {
+		return Result{0, fmt.Errorf("error getting left value: %s", resultLeft.Error.Error())}
+	}
+
+	if resultRight.Error != nil {
+		return Result{0, fmt.Errorf("error getting right value: %s", resultRight.Error.Error())}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerEQUAL {
+		if resultLeft.Value == resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerDIFF {
+		if resultLeft.Value != resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerLESS {
+		if resultLeft.Value < resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerGREATER {
+		if resultLeft.Value > resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerLESSEQ {
+		if resultLeft.Value <= resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
+	}
+
+	if ctx.GetOp().GetTokenType() == parsing.CalculatorLexerGREATEREQ {
+		if resultLeft.Value >= resultRight.Value {
+			return Result{1, nil}
+		}
+		return Result{0, nil}
 	}
 
 	return Result{0, fmt.Errorf("invalid operator: %s", ctx.GetOp().GetText())}

@@ -39,6 +39,10 @@ func (v *BaseCalculatorVisitor) VisitAddSub(ctx *AddSubContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCalculatorVisitor) VisitOpRel(ctx *OpRelContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCalculatorVisitor) VisitId(ctx *IdContext) interface{} {
 	return v.VisitChildren(ctx)
 }

@@ -31,6 +31,9 @@ type CalculatorListener interface {
 	// EnterAddSub is called when entering the AddSub production.
 	EnterAddSub(c *AddSubContext)
 
+	// EnterOpRel is called when entering the OpRel production.
+	EnterOpRel(c *OpRelContext)
+
 	// EnterId is called when entering the id production.
 	EnterId(c *IdContext)
 
@@ -57,6 +60,9 @@ type CalculatorListener interface {
 
 	// ExitAddSub is called when exiting the AddSub production.
 	ExitAddSub(c *AddSubContext)
+
+	// ExitOpRel is called when exiting the OpRel production.
+	ExitOpRel(c *OpRelContext)
 
 	// ExitId is called when exiting the id production.
 	ExitId(c *IdContext)

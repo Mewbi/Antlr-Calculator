@@ -32,35 +32,38 @@ var CalculatorParserStaticData struct {
 func calculatorParserInit() {
 	staticData := &CalculatorParserStaticData
 	staticData.LiteralNames = []string{
-		"", "'='", "'('", "')'", "'*'", "'/'", "'+'", "'-'",
+		"", "'='", "'('", "')'", "'*'", "'/'", "'+'", "'-'", "'=='", "'!='",
+		"'<'", "'>'", "'<='", "'>='",
 	}
 	staticData.SymbolicNames = []string{
-		"", "", "", "", "MUL", "DIV", "ADD", "SUB", "ID", "NUMBER", "NEWLINE",
-		"WS",
+		"", "", "", "", "MUL", "DIV", "ADD", "SUB", "EQUAL", "DIFF", "LESS",
+		"GREATER", "LESSEQ", "GREATEREQ", "ID", "NUMBER", "NEWLINE", "WS",
 	}
 	staticData.RuleNames = []string{
 		"prog", "stat", "expr",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 11, 43, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 1, 0, 4, 0, 8, 8, 0,
+		4, 1, 17, 46, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 1, 0, 4, 0, 8, 8, 0,
 		11, 0, 12, 0, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		3, 1, 21, 8, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 3, 2, 30, 8,
-		2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 5, 2, 38, 8, 2, 10, 2, 12, 2, 41,
-		9, 2, 1, 2, 0, 1, 4, 3, 0, 2, 4, 0, 2, 1, 0, 4, 5, 1, 0, 6, 7, 46, 0, 7,
-		1, 0, 0, 0, 2, 20, 1, 0, 0, 0, 4, 29, 1, 0, 0, 0, 6, 8, 3, 2, 1, 0, 7,
-		6, 1, 0, 0, 0, 8, 9, 1, 0, 0, 0, 9, 7, 1, 0, 0, 0, 9, 10, 1, 0, 0, 0, 10,
-		1, 1, 0, 0, 0, 11, 12, 3, 4, 2, 0, 12, 13, 5, 10, 0, 0, 13, 21, 1, 0, 0,
-		0, 14, 15, 5, 8, 0, 0, 15, 16, 5, 1, 0, 0, 16, 17, 3, 4, 2, 0, 17, 18,
-		5, 10, 0, 0, 18, 21, 1, 0, 0, 0, 19, 21, 5, 10, 0, 0, 20, 11, 1, 0, 0,
-		0, 20, 14, 1, 0, 0, 0, 20, 19, 1, 0, 0, 0, 21, 3, 1, 0, 0, 0, 22, 23, 6,
-		2, -1, 0, 23, 30, 5, 9, 0, 0, 24, 30, 5, 8, 0, 0, 25, 26, 5, 2, 0, 0, 26,
-		27, 3, 4, 2, 0, 27, 28, 5, 3, 0, 0, 28, 30, 1, 0, 0, 0, 29, 22, 1, 0, 0,
-		0, 29, 24, 1, 0, 0, 0, 29, 25, 1, 0, 0, 0, 30, 39, 1, 0, 0, 0, 31, 32,
-		10, 5, 0, 0, 32, 33, 7, 0, 0, 0, 33, 38, 3, 4, 2, 6, 34, 35, 10, 4, 0,
-		0, 35, 36, 7, 1, 0, 0, 36, 38, 3, 4, 2, 5, 37, 31, 1, 0, 0, 0, 37, 34,
-		1, 0, 0, 0, 38, 41, 1, 0, 0, 0, 39, 37, 1, 0, 0, 0, 39, 40, 1, 0, 0, 0,
-		40, 5, 1, 0, 0, 0, 41, 39, 1, 0, 0, 0, 5, 9, 20, 29, 37, 39,
+		2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 5, 2, 41, 8, 2,
+		10, 2, 12, 2, 44, 9, 2, 1, 2, 0, 1, 4, 3, 0, 2, 4, 0, 3, 1, 0, 4, 5, 1,
+		0, 6, 7, 1, 0, 8, 13, 50, 0, 7, 1, 0, 0, 0, 2, 20, 1, 0, 0, 0, 4, 29, 1,
+		0, 0, 0, 6, 8, 3, 2, 1, 0, 7, 6, 1, 0, 0, 0, 8, 9, 1, 0, 0, 0, 9, 7, 1,
+		0, 0, 0, 9, 10, 1, 0, 0, 0, 10, 1, 1, 0, 0, 0, 11, 12, 3, 4, 2, 0, 12,
+		13, 5, 16, 0, 0, 13, 21, 1, 0, 0, 0, 14, 15, 5, 14, 0, 0, 15, 16, 5, 1,
+		0, 0, 16, 17, 3, 4, 2, 0, 17, 18, 5, 16, 0, 0, 18, 21, 1, 0, 0, 0, 19,
+		21, 5, 16, 0, 0, 20, 11, 1, 0, 0, 0, 20, 14, 1, 0, 0, 0, 20, 19, 1, 0,
+		0, 0, 21, 3, 1, 0, 0, 0, 22, 23, 6, 2, -1, 0, 23, 30, 5, 15, 0, 0, 24,
+		30, 5, 14, 0, 0, 25, 26, 5, 2, 0, 0, 26, 27, 3, 4, 2, 0, 27, 28, 5, 3,
+		0, 0, 28, 30, 1, 0, 0, 0, 29, 22, 1, 0, 0, 0, 29, 24, 1, 0, 0, 0, 29, 25,
+		1, 0, 0, 0, 30, 42, 1, 0, 0, 0, 31, 32, 10, 6, 0, 0, 32, 33, 7, 0, 0, 0,
+		33, 41, 3, 4, 2, 7, 34, 35, 10, 5, 0, 0, 35, 36, 7, 1, 0, 0, 36, 41, 3,
+		4, 2, 6, 37, 38, 10, 4, 0, 0, 38, 39, 7, 2, 0, 0, 39, 41, 3, 4, 2, 5, 40,
+		31, 1, 0, 0, 0, 40, 34, 1, 0, 0, 0, 40, 37, 1, 0, 0, 0, 41, 44, 1, 0, 0,
+		0, 42, 40, 1, 0, 0, 0, 42, 43, 1, 0, 0, 0, 43, 5, 1, 0, 0, 0, 44, 42, 1,
+		0, 0, 0, 5, 9, 20, 29, 40, 42,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -98,18 +101,24 @@ func NewCalculatorParser(input antlr.TokenStream) *CalculatorParser {
 
 // CalculatorParser tokens.
 const (
-	CalculatorParserEOF     = antlr.TokenEOF
-	CalculatorParserT__0    = 1
-	CalculatorParserT__1    = 2
-	CalculatorParserT__2    = 3
-	CalculatorParserMUL     = 4
-	CalculatorParserDIV     = 5
-	CalculatorParserADD     = 6
-	CalculatorParserSUB     = 7
-	CalculatorParserID      = 8
-	CalculatorParserNUMBER  = 9
-	CalculatorParserNEWLINE = 10
-	CalculatorParserWS      = 11
+	CalculatorParserEOF       = antlr.TokenEOF
+	CalculatorParserT__0      = 1
+	CalculatorParserT__1      = 2
+	CalculatorParserT__2      = 3
+	CalculatorParserMUL       = 4
+	CalculatorParserDIV       = 5
+	CalculatorParserADD       = 6
+	CalculatorParserSUB       = 7
+	CalculatorParserEQUAL     = 8
+	CalculatorParserDIFF      = 9
+	CalculatorParserLESS      = 10
+	CalculatorParserGREATER   = 11
+	CalculatorParserLESSEQ    = 12
+	CalculatorParserGREATEREQ = 13
+	CalculatorParserID        = 14
+	CalculatorParserNUMBER    = 15
+	CalculatorParserNEWLINE   = 16
+	CalculatorParserWS        = 17
 )
 
 // CalculatorParser rules.
@@ -250,7 +259,7 @@ func (p *CalculatorParser) Prog() (localctx IProgContext) {
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for ok := true; ok; ok = ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1796) != 0) {
+	for ok := true; ok; ok = ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&114692) != 0) {
 		{
 			p.SetState(6)
 			p.Stat()
@@ -928,6 +937,116 @@ func (s *AddSubContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	}
 }
 
+type OpRelContext struct {
+	ExprContext
+	op antlr.Token
+}
+
+func NewOpRelContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *OpRelContext {
+	var p = new(OpRelContext)
+
+	InitEmptyExprContext(&p.ExprContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*ExprContext))
+
+	return p
+}
+
+func (s *OpRelContext) GetOp() antlr.Token { return s.op }
+
+func (s *OpRelContext) SetOp(v antlr.Token) { s.op = v }
+
+func (s *OpRelContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *OpRelContext) AllExpr() []IExprContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IExprContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IExprContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IExprContext); ok {
+			tst[i] = t.(IExprContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *OpRelContext) Expr(i int) IExprContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExprContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExprContext)
+}
+
+func (s *OpRelContext) EQUAL() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserEQUAL, 0)
+}
+
+func (s *OpRelContext) DIFF() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserDIFF, 0)
+}
+
+func (s *OpRelContext) LESS() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserLESS, 0)
+}
+
+func (s *OpRelContext) GREATER() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserGREATER, 0)
+}
+
+func (s *OpRelContext) LESSEQ() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserLESSEQ, 0)
+}
+
+func (s *OpRelContext) GREATEREQ() antlr.TerminalNode {
+	return s.GetToken(CalculatorParserGREATEREQ, 0)
+}
+
+func (s *OpRelContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(CalculatorListener); ok {
+		listenerT.EnterOpRel(s)
+	}
+}
+
+func (s *OpRelContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(CalculatorListener); ok {
+		listenerT.ExitOpRel(s)
+	}
+}
+
+func (s *OpRelContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case CalculatorVisitor:
+		return t.VisitOpRel(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
 type IdContext struct {
 	ExprContext
 }
@@ -1054,7 +1173,7 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(39)
+	p.SetState(42)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1069,7 +1188,7 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(37)
+			p.SetState(40)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -1081,8 +1200,8 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 				p.PushNewRecursionContext(localctx, _startState, CalculatorParserRULE_expr)
 				p.SetState(31)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
-					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 6)) {
+					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 6)", ""))
 					goto errorExit
 				}
 				{
@@ -1105,7 +1224,7 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 				}
 				{
 					p.SetState(33)
-					p.expr(6)
+					p.expr(7)
 				}
 
 			case 2:
@@ -1113,8 +1232,8 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 				p.PushNewRecursionContext(localctx, _startState, CalculatorParserRULE_expr)
 				p.SetState(34)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
-					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 4)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
+					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
 					goto errorExit
 				}
 				{
@@ -1137,6 +1256,38 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 				}
 				{
 					p.SetState(36)
+					p.expr(6)
+				}
+
+			case 3:
+				localctx = NewOpRelContext(p, NewExprContext(p, _parentctx, _parentState))
+				p.PushNewRecursionContext(localctx, _startState, CalculatorParserRULE_expr)
+				p.SetState(37)
+
+				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
+					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 4)", ""))
+					goto errorExit
+				}
+				{
+					p.SetState(38)
+
+					var _lt = p.GetTokenStream().LT(1)
+
+					localctx.(*OpRelContext).op = _lt
+
+					_la = p.GetTokenStream().LA(1)
+
+					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&16128) != 0) {
+						var _ri = p.GetErrorHandler().RecoverInline(p)
+
+						localctx.(*OpRelContext).op = _ri
+					} else {
+						p.GetErrorHandler().ReportMatch(p)
+						p.Consume()
+					}
+				}
+				{
+					p.SetState(39)
 					p.expr(5)
 				}
 
@@ -1145,7 +1296,7 @@ func (p *CalculatorParser) expr(_p int) (localctx IExprContext) {
 			}
 
 		}
-		p.SetState(41)
+		p.SetState(44)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1186,9 +1337,12 @@ func (p *CalculatorParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIn
 func (p *CalculatorParser) Expr_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 0:
-		return p.Precpred(p.GetParserRuleContext(), 5)
+		return p.Precpred(p.GetParserRuleContext(), 6)
 
 	case 1:
+		return p.Precpred(p.GetParserRuleContext(), 5)
+
+	case 2:
 		return p.Precpred(p.GetParserRuleContext(), 4)
 
 	default:
